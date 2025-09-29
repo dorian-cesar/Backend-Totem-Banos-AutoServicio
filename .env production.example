@@ -1,0 +1,14 @@
+PORT=3000
+
+# MySQL
+DB_HOST=10.0.0.15
+DB_USER=backend_user
+DB_PASSWORD=ClaveProduccionUltraSegura!
+DB_NAME=totem_banos
+
+# JWT
+JWT_SECRET=una_clave_super_segura_prod
+JWT_EXPIRES_IN=60m
+
+# CORS
+CORS_ORIGIN=https://tu-frontend.netlify.app

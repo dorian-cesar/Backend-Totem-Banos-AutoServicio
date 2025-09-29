@@ -8,6 +8,8 @@ require('dotenv').config({
 const servicioRoutes = require('./routes/servicioRoutes');
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
+const logRoutes = require('./routes/logRoutes');
+const auditLogger = require('./middleware/auditLogger');
 const { requireAuth } = require('./controllers/authController');
 
 
@@ -31,6 +33,9 @@ app.use(express.json());
 // Ruta pública
 app.get('/', (req, res) => res.json({ message: `Servidor funcionando en ${process.env.NODE_ENV} 🚀` }));
 
+// Middleware de auditoría
+app.use(auditLogger);
+
 // Rutas públicas de auth
 app.use('/api/auth', authRoutes);
 
@@ -42,6 +47,8 @@ app.use('/api/users', userRoutes);
 
 // Rutas protegidas
 app.use('/api/servicios', servicioRoutes);
+
+app.use('/api/logs', logRoutes);
 
 // ⚠️ Middleware de manejo de errores global
 app.use((err, req, res, _next) => {

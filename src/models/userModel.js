@@ -1,4 +1,5 @@
 const pool = require('../config/db');
+const { nowChileSQL } = require('../utils/time');
 
 const User = {
   async getAll() {
@@ -18,8 +19,8 @@ const User = {
 
   async create({ email, passwordHash, role = 'user' }) {
     const [result] = await pool.query(
-      'INSERT INTO users (email, password_hash, role) VALUES (?, ?, ?)',
-      [email, passwordHash, role]
+      'INSERT INTO users (email, password_hash, role, created_at) VALUES (?, ?, ?, ?)',
+      [email, passwordHash, role, nowChileSQL()]
     );
     return { id: result.insertId, email, role };
   },

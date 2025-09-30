@@ -25,11 +25,11 @@ const getUserById = async (req, res) => {
 // Actualizar usuario
 const updateUser = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, role, name, lastName } = req.body;
     if (!email || !password) return res.status(400).json({ error: 'Email y password requeridos' });
 
     const passwordHash = await bcrypt.hash(password, 10);
-    const actualizado = await User.update(req.params.id, { email, passwordHash });
+    const actualizado = await User.update(req.params.id, { email, passwordHash, role, name, lastName });
     if (!actualizado) return res.status(404).json({ error: 'Usuario no encontrado' });
 
     res.json(actualizado);

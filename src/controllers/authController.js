@@ -8,14 +8,14 @@ const EXPIRES_IN = process.env.JWT_EXPIRES_IN || '15m';
 // Registrar nuevo usuario
 const register = async (req, res) => {
   try {
-    const { email, password } = req.body;
-    if (!email || !password) return res.status(400).json({ error: 'Email y password requeridos' });
+    const { email, password, name, lastName, role } = req.body;
+    if (!email || !password || !name) return res.status(400).json({ error: 'Nombre, email y password requeridos' });
 
     const exists = await User.findByEmail(email);
     if (exists) return res.status(400).json({ error: 'Usuario ya registrado' });
 
     const passwordHash = await bcrypt.hash(password, 10);
-    const nuevo = await User.create({ email, passwordHash });
+    const nuevo = await User.create({ email, passwordHash, name, lastName, role });
 
     res.status(201).json({ message: 'Usuario creado', user: nuevo });
   } catch (err) {
@@ -36,7 +36,7 @@ const login = async (req, res) => {
     if (!match) return res.status(401).json({ error: 'Credenciales inválidas' });
 
     const token = jwt.sign(
-      { id: user.id, email: user.email },
+      { id: user.id, email: user.email, role: user.role },
       SECRET,
       { expiresIn: EXPIRES_IN }
     );
@@ -64,7 +64,6 @@ const requireAuth = (req, res, next) => {
 
 const me = async (req, res) => {
   try {
-    // req.user se setea en requireAuth
     res.json({ user: req.user });
   } catch (err) {
     res.status(500).json({ error: err.message });

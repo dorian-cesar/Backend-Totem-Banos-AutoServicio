@@ -32,7 +32,7 @@ async function listPaginatedLogs(req, res) {
       return res.status(403).json({ error: 'Acceso denegado' });
     }
 
-    const limit = Math.min(parseInt(req.query.limit) || 100, 1000); // máximo 1000
+    const limit = Math.min(parseInt(req.query.limit) || 100, 1000);
     const offset = parseInt(req.query.offset) || 0;
 
     const [logs, total] = await Promise.all([

@@ -1,13 +1,14 @@
 const pool = require('../config/db');
+const { nowChileSQL } = require('../utils/time');
 
 const Servicio = {
   async getAll() {
-    const [rows] = await pool.query('SELECT * FROM servicios ORDER BY id DESC');
+    const [rows] = await pool.query('SELECT id, nombre, precio, created_at FROM servicios ORDER BY id DESC');
     return rows;
   },
 
   async getById(id) {
-    const [rows] = await pool.query('SELECT * FROM servicios WHERE id = ?', [id]);
+    const [rows] = await pool.query('SELECT id, nombre, precio, created_at FROM servicios WHERE id = ?', [id]);
     return rows[0];
   },
 
@@ -17,8 +18,8 @@ const Servicio = {
       throw new Error('Campos requeridos: nombre, precio');
     }
     const [result] = await pool.query(
-      'INSERT INTO servicios (nombre, precio) VALUES (?, ?)',
-      [nombre, precio]
+      'INSERT INTO servicios (nombre, precio, created_at) VALUES (?, ?, ?)',
+      [nombre, precio, nowChileSQL()]
     );
     return { id: result.insertId, nombre, precio };
   },

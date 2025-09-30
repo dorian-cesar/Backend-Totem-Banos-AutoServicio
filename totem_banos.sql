@@ -11,12 +11,22 @@ CREATE TABLE IF NOT EXISTS servicios (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Tabla de usuarios
 CREATE TABLE IF NOT EXISTS users (
   id INT AUTO_INCREMENT PRIMARY KEY,
+
+  -- Identificación
+  name VARCHAR(100) NOT NULL,          
+  last_name VARCHAR(100) NULL,        
+
+  -- Credenciales
   email VARCHAR(100) NOT NULL UNIQUE,
   password_hash VARCHAR(255) NOT NULL,
-  role VARCHAR(50) NOT NULL DEFAULT 'user',
+
+  -- Clasificación
+  role ENUM('admin','totem','user') NOT NULL DEFAULT 'user',
+  is_active BOOLEAN NOT NULL DEFAULT TRUE,
+
+  -- Auditoría
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -46,5 +56,9 @@ INSERT INTO servicios (nombre, precio) VALUES
   ('Ducha', 3500);
 
 -- Insertar usuario admin (password: 123456 hasheado con bcrypt)
-INSERT INTO users (email, password_hash, role) VALUES
-  ('admin@wit.la', '$2b$10$ZLDbL8Nf5cYhdzQ9Pa99Pu9glTfJniH1TOdEh0QKnwClK9xB0iRUm', 'admin');
+INSERT INTO users (name, last_name, email, password_hash, role) VALUES
+  ('Administrador', NULL, 'admin@wit.la', '$2b$10$ZLDbL8Nf5cYhdzQ9Pa99Pu9glTfJniH1TOdEh0QKnwClK9xB0iRUm', 'admin');
+
+-- Insertar usuario totem (password: 123456 hasheado con bcrypt)
+INSERT INTO users (name, last_name, email, password_hash, role) VALUES
+  ('Totem baño 1', NULL, 'totem1@wit.la', '$2b$10$ZLDbL8Nf5cYhdzQ9Pa99Pu9glTfJniH1TOdEh0QKnwClK9xB0iRUm', 'totem');

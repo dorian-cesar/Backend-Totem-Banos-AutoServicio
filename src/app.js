@@ -39,7 +39,7 @@ app.use(auditLogger);
 // Rutas públicas de auth
 app.use('/api/auth', authRoutes);
 
-// Middleware global: a partir de aquí exige JWT
+// ------------------------------- Middleware global: a partir de aquí exige JWT -----------------------------
 app.use(requireAuth);
 
 // Rutas protegidas de usuarios

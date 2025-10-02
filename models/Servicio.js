@@ -1,14 +1,18 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
+const { nowChileSQL } = require("../utils/time");
 
 const Servicio = sequelize.define("Servicio", {
-  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  nombre: { type: DataTypes.STRING },
-  precio: { type: DataTypes.DECIMAL(10,2) },
-  created_at: { type: DataTypes.DATE, defaultValue: DataTypes.NOW }
+  nombre: { type: DataTypes.STRING, allowNull: false },
+  precio: { type: DataTypes.INTEGER, allowNull: false },
+  created_at: {
+    type: DataTypes.DATE,
+    allowNull: false,
+    defaultValue: () => nowChileSQL(),
+  },
 }, {
   tableName: "servicios",
-  timestamps: false
+  timestamps: false,
 });
 
 module.exports = Servicio;

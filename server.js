@@ -1,21 +1,35 @@
 // server.js
 require("dotenv").config();
 const express = require("express");
+const cors = require("cors");
 const sequelize = require("./config/database");
+const auditLogger = require("./middlewares/auditLogger");
 
 // 🔹 Importar todos los modelos antes de sync
 require("./models/User");
 require("./models/Servicio");
-require("./models/ApiLog"); // tu modelo ApiLog
+require("./models/ApiLog");
 
 // 🔹 Inicializar Express
 const app = express();
 app.use(express.json());
 
+// 🔹 Configuración de CORS
+const corsOptions =
+  process.env.NODE_ENV === "development"
+    ? { origin: "*"} // 🔓 Permite todos los orígenes en desarrollo
+    : { origin: process.env.CORS_ORIGIN?.split(",") || [], credentials: true };
+
+app.use(cors(corsOptions));
+
+// 🔹 Middleware de logger
+app.use(auditLogger);
+
 // 🔹 Rutas
 const authRoutes = require("./routes/authRoutes");
 const servicioRoutes = require("./routes/servicioRoutes");
-app.use("/auth", authRoutes);
+
+app.use("/api/auth", authRoutes);
 app.use("/api/servicios", servicioRoutes);
 
 // 🔹 Health check

@@ -2,7 +2,7 @@
 const express = require("express");
 const router = express.Router();
 const servicioController = require("../controllers/servicioController");
-const authenticate = require("../middleware/auth");
+const authenticate = require("../middlewares/auth");
 
 // Todas las rutas protegidas
 router.use(authenticate);

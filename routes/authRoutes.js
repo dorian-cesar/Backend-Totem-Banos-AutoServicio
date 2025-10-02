@@ -10,4 +10,7 @@ router.post("/login", authController.login);
 // Ruta protegida
 router.get("/me", authenticate, authController.me);
 
+// Registro de usuario
+router.post("/registro", authController.registro);
+
 module.exports = router;

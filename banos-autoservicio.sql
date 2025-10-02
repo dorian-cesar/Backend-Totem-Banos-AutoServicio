@@ -1,47 +1,48 @@
--- Crear base de datos
-CREATE SCHEMA IF NOT EXISTS totem_banos;
+-- Crear base de datos (se hace fuera de psql si no existe)
+CREATE DATABASE banos_autoservicio;
 
-USE totem_banos;
+-- Conectar a la base
+\c banos_autoservicio;
 
 -- Tabla de servicios
 CREATE TABLE IF NOT EXISTS servicios (
-  id INT AUTO_INCREMENT PRIMARY KEY,
+  id SERIAL PRIMARY KEY,
   nombre VARCHAR(100) NOT NULL,
-  precio INT NOT NULL COMMENT 'Precio en pesos chilenos',
-  created_at TIMESTAMP NOT NULL -- Será insertado desde Node.js con Luxon
+  precio INT NOT NULL, -- Precio en pesos chilenos
+  created_at TIMESTAMP NOT NULL
 );
 
 -- Tabla de usuarios
 CREATE TABLE IF NOT EXISTS users (
-  id INT AUTO_INCREMENT PRIMARY KEY,
+  id SERIAL PRIMARY KEY,
 
   -- Identificación
   name VARCHAR(100) NOT NULL,
-  last_name VARCHAR(100) NULL,
+  last_name VARCHAR(100),
 
   -- Credenciales
   email VARCHAR(100) NOT NULL UNIQUE,
   password_hash VARCHAR(255) NOT NULL,
 
   -- Clasificación
-  role ENUM('admin','totem','user') NOT NULL DEFAULT 'user',
+  role TEXT NOT NULL DEFAULT 'user' CHECK (role IN ('admin','totem','user')),
   is_active BOOLEAN NOT NULL DEFAULT TRUE,
 
   -- Auditoría
-  created_at TIMESTAMP NOT NULL -- Será insertado desde Node.js con Luxon
+  created_at TIMESTAMP NOT NULL
 );
 
 -- Tabla de logs de API
 CREATE TABLE IF NOT EXISTS api_logs (
-  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  id BIGSERIAL PRIMARY KEY,
   user_id INT NULL,
-  user_email VARCHAR(100) NULL,
+  user_email VARCHAR(100),
   method VARCHAR(10) NOT NULL,
   endpoint VARCHAR(255) NOT NULL,
   ip VARCHAR(45) NOT NULL,
   status_code INT NOT NULL,
-  response_time_ms DECIMAL(10,2) NOT NULL,
-  created_at TIMESTAMP NOT NULL, -- Será insertado desde Node.js con Luxon
+  response_time_ms NUMERIC(10,2) NOT NULL,
+  created_at TIMESTAMP NOT NULL,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
 );
 
@@ -51,7 +52,7 @@ CREATE INDEX idx_api_logs_email ON api_logs(user_email);
 CREATE INDEX idx_api_logs_endpoint ON api_logs(endpoint);
 CREATE INDEX idx_api_logs_created_at ON api_logs(created_at);
 
--- Insertar registros en servicios (created_at se asigna desde Node.js)
+-- Insertar registros en servicios
 INSERT INTO servicios (nombre, precio, created_at) VALUES
   ('Baño', 500, NOW()),
   ('Ducha', 3500, NOW());

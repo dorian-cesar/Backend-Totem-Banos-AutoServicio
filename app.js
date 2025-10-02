@@ -6,6 +6,7 @@ const auditLogger = require("./middlewares/auditLogger");
 require("./models/User");
 require("./models/Servicio");
 require("./models/ApiLog");
+require("./cron/limpiezaLogs");
 
 const app = express();
 app.use(express.json());

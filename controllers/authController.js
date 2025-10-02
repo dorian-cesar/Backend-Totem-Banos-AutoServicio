@@ -10,29 +10,24 @@ exports.login = async (req, res) => {
     if (!email || !password)
       return res.status(400).json({ error: "Email y password requeridos" });
 
-    const user = await User.findOne({ where: { email } });
+    //Importante: incluye el hash SOLO aquí
+    const user = await User.scope("withPassword").findOne({
+      where: { email },
+      include: { model: Role, as: "role", attributes: ["id", "name"] },
+    });
+
     if (!user) return res.status(401).json({ error: "Credenciales inválidas" });
     if (!user.is_active) return res.status(403).json({ error: "Usuario inactivo" });
 
-    const match = await bcrypt.compare(password, user.password_hash);
-    if (!match) return res.status(401).json({ error: "Credenciales inválidas" });
+    const ok = await bcrypt.compare(password, user.password_hash);
+    if (!ok) return res.status(401).json({ error: "Credenciales inválidas" });
 
-    const payload = { id: user.id, email: user.email, role: user.role };
+    const payload = { id: user.id, email: user.email, role_id: user.role_id, role: user.role?.name };
     const token = jwt.sign(payload, process.env.JWT_SECRET, {
-      expiresIn: process.env.JWT_EXPIRES_IN || "1h",
+      expiresIn: process.env.JWT_EXPIRES_IN || "60m",
     });
 
-    res.json({
-      token,
-      user: {
-        id: user.id,
-        name: user.name,
-        last_name: user.last_name,
-        email: user.email,
-        role: user.role,
-        is_active: user.is_active,
-      },
-    });
+    res.json({ token, user: user.toJSON() });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Error interno" });

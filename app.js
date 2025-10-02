@@ -24,9 +24,11 @@ app.use(auditLogger);
 // 🔹 Rutas
 const authRoutes = require("./routes/authRoutes");
 const servicioRoutes = require("./routes/servicioRoutes");
+const userRoutes = require("./routes/userRoutes");
 
 app.use("/api/auth", authRoutes);
 app.use("/api/servicios", servicioRoutes);
+app.use("/api/users", userRoutes);
 
 // 🔹 Health check
 app.get("/", (req, res) => res.json({ ok: true }));

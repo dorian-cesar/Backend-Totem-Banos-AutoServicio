@@ -1,3 +1,4 @@
+// models/Venta.js
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
 const User = require("./User");
@@ -6,22 +7,40 @@ const { nowChileSQL } = require("../utils/time");
 
 const Venta = sequelize.define("Venta", {
   id: { type: DataTypes.BIGINT, autoIncrement: true, primaryKey: true },
+
   usuario_id: {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: { model: "users", key: "id" }
   },
+
   servicio_id: {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: { model: "servicios", key: "id" }
   },
+
   monto: { type: DataTypes.INTEGER, allowNull: false },
   metodo_pago: { type: DataTypes.STRING(50), allowNull: false },
   estado: { type: DataTypes.STRING(50), defaultValue: "pendiente" },
+
   id_transaccion: { type: DataTypes.STRING(100) },
   codigo_autorizacion: { type: DataTypes.STRING(50) },
   codigo_comercio: { type: DataTypes.STRING(50) },
+
+  ip_amos: {
+    type: DataTypes.STRING(45),
+    allowNull: false,
+    validate: {
+      notEmpty: true,
+    }
+  },
+  ubicacion: {
+    type: DataTypes.STRING(100),
+    allowNull: false,
+    validate: { notEmpty: true }
+  },
+
   creado_en: {
     type: DataTypes.DATE,
     allowNull: false,

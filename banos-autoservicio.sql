@@ -90,6 +90,10 @@ CREATE TABLE IF NOT EXISTS bano_autoservicio.ventas (
   codigo_autorizacion VARCHAR(50), -- Código de autorización
   codigo_comercio VARCHAR(50),     -- Código de comercio (entregado por Transbank)
 
+  -- Datos del tótem / AMOS
+  ip_amos VARCHAR(45) NOT NULL,        -- IP del AMOS (IPv4/IPv6 soportado)
+  ubicacion VARCHAR(100) NOT NULL,     -- Ubicación física (ej: "Terminal Sur")
+
   -- Auditoría
   creado_en TIMESTAMP NOT NULL DEFAULT NOW()
 );
@@ -103,6 +107,8 @@ CREATE INDEX IF NOT EXISTS idx_ventas_estado           ON bano_autoservicio.vent
 CREATE INDEX IF NOT EXISTS idx_ventas_creado_en        ON bano_autoservicio.ventas(creado_en);
 CREATE INDEX IF NOT EXISTS idx_ventas_id_transaccion   ON bano_autoservicio.ventas(id_transaccion);
 CREATE INDEX IF NOT EXISTS idx_ventas_codigo_comercio  ON bano_autoservicio.ventas(codigo_comercio);
+CREATE INDEX IF NOT EXISTS idx_ventas_ip_amos          ON bano_autoservicio.ventas(ip_amos);
+CREATE INDEX IF NOT EXISTS idx_ventas_ubicacion        ON bano_autoservicio.ventas(ubicacion);
 
 -- ============================================
 -- Inserts iniciales

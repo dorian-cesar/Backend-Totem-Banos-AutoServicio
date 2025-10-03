@@ -12,50 +12,36 @@ exports.createVenta = async (req, res) => {
       servicio_id,
       monto,
       metodo_pago,
-      estado,
+      // nuevos:
+      ip_amos,
+      ubicacion,
+      // opcionales:
       id_transaccion,
       codigo_autorizacion,
       codigo_comercio,
     } = req.body;
 
-    // Validaciones básicas
-    if (usuario_id == null || servicio_id == null || monto == null || !metodo_pago) {
-      return res.status(400).json({
-        ok: false,
-        message: "Faltan datos obligatorios",
-        missing: {
-          usuario_id: usuario_id == null,
-          servicio_id: servicio_id == null,
-          monto: monto == null,
-          metodo_pago: !metodo_pago,
-        },
-      });
+    // Validación básica
+    if (!usuario_id || !servicio_id || !monto || !metodo_pago || !ip_amos || !ubicacion) {
+      return res.status(400).json({ error: "Faltan datos obligatorios: usuario_id, servicio_id, monto, metodo_pago, ip, ubicacion" });
     }
 
-    const nuevaVenta = await Venta.create({
+    const venta = await Venta.create({
       usuario_id,
       servicio_id,
       monto,
       metodo_pago,
-      estado: estado || "pendiente",
+      ip_amos,
+      ubicacion,
       id_transaccion,
       codigo_autorizacion,
       codigo_comercio,
     });
 
-    return res.status(201).json({
-      ok: true,
-      message: "Venta registrada exitosamente",
-      data: nuevaVenta,
-    });
-  } catch (error) {
-    console.error("[VENTA CONTROLLER] Error al crear venta:", error);
-    return res.status(500).json({
-      ok: false,
-      message: "Error al registrar venta",
-      code: "CREATE_VENTA_ERROR",
-      detail: error?.message,
-    });
+    return res.status(201).json(venta);
+  } catch (err) {
+    console.error("Error creando venta:", err);
+    return res.status(500).json({ error: "Error interno del servidor" });
   }
 };
 

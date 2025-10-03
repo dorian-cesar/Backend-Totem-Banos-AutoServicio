@@ -1,4 +1,3 @@
-// config/database.js
 require("dotenv").config();
 const { Sequelize } = require("sequelize");
 
@@ -15,11 +14,14 @@ const sequelize = new Sequelize(
     dialectOptions: {
       ssl: {
         require: true,
-        rejectUnauthorized: false
-      }
-    }
+        rejectUnauthorized: false,
+      },
+    },
+    timezone: "America/Santiago",
   }
 );
 
-console.log(process.env.DB_SCHEMA);
+console.log("Schema:", process.env.DB_SCHEMA);
+console.log("Timezone configurada:", "America/Santiago");
+
 module.exports = sequelize;

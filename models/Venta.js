@@ -2,16 +2,17 @@ const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
 const User = require("./User");
 const Servicio = require("./Servicio");
+const { nowChileSQL } = require("../utils/time");
 
 const Venta = sequelize.define("Venta", {
   id: { type: DataTypes.BIGINT, autoIncrement: true, primaryKey: true },
-  usuario_id: { 
-    type: DataTypes.INTEGER, 
+  usuario_id: {
+    type: DataTypes.INTEGER,
     allowNull: false,
     references: { model: "users", key: "id" }
   },
-  servicio_id: { 
-    type: DataTypes.INTEGER, 
+  servicio_id: {
+    type: DataTypes.INTEGER,
     allowNull: false,
     references: { model: "servicios", key: "id" }
   },
@@ -21,14 +22,17 @@ const Venta = sequelize.define("Venta", {
   id_transaccion: { type: DataTypes.STRING(100) },
   codigo_autorizacion: { type: DataTypes.STRING(50) },
   codigo_comercio: { type: DataTypes.STRING(50) },
-  creado_en: { type: DataTypes.DATE, defaultValue: DataTypes.NOW }
+  creado_en: {
+    type: DataTypes.DATE,
+    allowNull: false,
+    defaultValue: () => nowChileSQL(),
+  },
 }, {
   tableName: "ventas",
   schema: "bano_autoservicio",
-  timestamps: false
+  timestamps: false,
 });
 
-// Relaciones
 Venta.belongsTo(User, { foreignKey: "usuario_id", as: "usuario" });
 Venta.belongsTo(Servicio, { foreignKey: "servicio_id", as: "servicio" });
 

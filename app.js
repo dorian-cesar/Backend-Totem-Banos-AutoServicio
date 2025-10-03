@@ -27,11 +27,15 @@ const authRoutes = require("./routes/authRoutes");
 const servicioRoutes = require("./routes/servicioRoutes");
 const userRoutes = require("./routes/userRoutes");
 const roleRoutes = require("./routes/roleRoutes");
+const ventaRoutes = require("./routes/ventaRoutes");
+const serverRoutes = require("./routes/serverRoutes");
 
 app.use("/api/auth", authRoutes);
 app.use("/api/servicios", servicioRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/roles", roleRoutes);
+app.use("/api/ventas", ventaRoutes);
+app.use("/server", serverRoutes);
 
 // 🔹 Health check
 app.get("/", (req, res) => res.json({ ok: true }));

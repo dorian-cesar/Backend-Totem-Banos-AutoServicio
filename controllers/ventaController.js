@@ -1,4 +1,3 @@
-// controllers/ventaController.js
 const Venta = require("../models/Venta");
 const User = require("../models/User");
 const Servicio = require("../models/Servicio");
@@ -20,15 +19,15 @@ exports.createVenta = async (req, res) => {
     } = req.body;
 
     // Validaciones básicas
-    if (!usuario_id || !servicio_id || !monto || !metodo_pago) {
+    if (usuario_id == null || servicio_id == null || monto == null || !metodo_pago) {
       return res.status(400).json({
         ok: false,
         message: "Faltan datos obligatorios",
         missing: {
-          usuario_id: !!usuario_id,
-          servicio_id: !!servicio_id,
-          monto: !!monto,
-          metodo_pago: !!metodo_pago,
+          usuario_id: usuario_id == null,
+          servicio_id: servicio_id == null,
+          monto: monto == null,
+          metodo_pago: !metodo_pago,
         },
       });
     }
@@ -70,7 +69,7 @@ exports.getVentas = async (req, res) => {
         { model: User, as: "usuario", attributes: ["id", "name", "last_name", "email"] },
         { model: Servicio, as: "servicio", attributes: ["id", "nombre", "precio"] },
       ],
-      order: [["creado_en", "DESC"]], // <-- coincide con tu columna en DB
+      order: [["creado_en", "DESC"]], // columna en DB
     });
 
     return res.status(200).json({

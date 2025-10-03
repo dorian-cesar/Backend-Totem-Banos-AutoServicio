@@ -40,12 +40,14 @@ exports.getServerStats = async (req, res) => {
         },
       },
       database: {
-        status: dbStatus,
-        host: process.env.DB_HOST,
-        name: process.env.DB_NAME,
+        status: dbStatus, // solo online/offline
       },
     });
   } catch (error) {
-    res.status(500).json({ ok: false, error: "Error obteniendo estadísticas", detail: error.message });
+    res.status(500).json({
+      ok: false,
+      error: "Error obteniendo estadísticas",
+      detail: error.message,
+    });
   }
 };

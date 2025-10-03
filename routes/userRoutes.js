@@ -2,6 +2,10 @@
 const express = require("express");
 const router = express.Router();
 const userController = require("../controllers/userController");
+const authenticate = require("../middlewares/auth");
+
+// Todas las rutas protegidas
+router.use(authenticate);
 
 // Rutas CRUD
 router.get("/", userController.getAllUsers);

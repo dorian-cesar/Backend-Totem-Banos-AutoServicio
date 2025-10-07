@@ -22,7 +22,7 @@ const Venta = sequelize.define("Venta", {
 
   monto: { type: DataTypes.INTEGER, allowNull: false },
   metodo_pago: { type: DataTypes.STRING(50), allowNull: false },
-  estado: { type: DataTypes.STRING(50), defaultValue: "pendiente" },
+  estado: { type: DataTypes.STRING(50), defaultValue: "" },
 
   id_transaccion: { type: DataTypes.STRING(100) },
   codigo_autorizacion: { type: DataTypes.STRING(50) },

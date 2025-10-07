@@ -17,7 +17,7 @@ exports.createVenta = async (req, res) => {
       id_transaccion,
       codigo_autorizacion,
       codigo_comercio,
-      estado = 'pendiente'
+      estado
     } = req.body;
 
     if (!usuario_id || !servicio_id || !monto || !metodo_pago || !ip_amos || !ubicacion) {

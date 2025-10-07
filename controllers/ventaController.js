@@ -12,18 +12,19 @@ exports.createVenta = async (req, res) => {
       servicio_id,
       monto,
       metodo_pago,
-      // nuevos:
       ip_amos,
       ubicacion,
-      // opcionales:
       id_transaccion,
       codigo_autorizacion,
       codigo_comercio,
+      estado = 'pendiente'
     } = req.body;
 
-    // Validación básica
     if (!usuario_id || !servicio_id || !monto || !metodo_pago || !ip_amos || !ubicacion) {
-      return res.status(400).json({ error: "Faltan datos obligatorios: usuario_id, servicio_id, monto, metodo_pago, ip, ubicacion" });
+      return res.status(400).json({ 
+        ok: false,
+        error: "Faltan datos obligatorios" 
+      });
     }
 
     const venta = await Venta.create({
@@ -36,12 +37,20 @@ exports.createVenta = async (req, res) => {
       id_transaccion,
       codigo_autorizacion,
       codigo_comercio,
+      estado
     });
 
-    return res.status(201).json(venta);
+    return res.status(201).json({
+      ok: true,
+      message: "Venta creada correctamente",
+      data: venta
+    });
   } catch (err) {
     console.error("Error creando venta:", err);
-    return res.status(500).json({ error: "Error interno del servidor" });
+    return res.status(500).json({ 
+      ok: false,
+      error: "Error interno del servidor"
+    });
   }
 };
 

@@ -1,6 +1,7 @@
 const Venta = require("../models/Venta");
 const User = require("../models/User");
 const Servicio = require("../models/Servicio");
+const moment = require("moment-timezone");
 
 // ===============================
 // Crear una nueva venta
@@ -40,10 +41,16 @@ exports.createVenta = async (req, res) => {
       estado
     });
 
+    // 🔹 Convertir fecha a hora chilena antes de responder
+    const ventaData = venta.toJSON();
+    ventaData.creado_en_chile = moment(ventaData.creado_en)
+      .tz("America/Santiago")
+      .format("YYYY-MM-DD HH:mm:ss");
+
     return res.status(201).json({
       ok: true,
       message: "Venta creada correctamente",
-      data: venta
+      data: ventaData
     });
   } catch (err) {
     console.error("Error creando venta:", err);
@@ -60,13 +67,11 @@ exports.createVenta = async (req, res) => {
 exports.getVentas = async (req, res) => {
   try {
     const { search } = req.query;
-
     const where = {};
 
     if (search) {
       const { Op } = require("sequelize");
       const term = `%${search}%`;
-
       where[Op.or] = [
         { estado: { [Op.like]: term } },
         { id_transaccion: { [Op.like]: term } },
@@ -83,7 +88,6 @@ exports.getVentas = async (req, res) => {
           model: User,
           as: "usuario",
           attributes: ["id", "name", "last_name", "email"],
-          // Permite buscar también dentro de usuario
           ...(search && {
             where: {
               [require("sequelize").Op.or]: [
@@ -92,7 +96,7 @@ exports.getVentas = async (req, res) => {
               ],
             },
           }),
-          required: false, // para no excluir ventas sin usuario
+          required: false,
         },
         {
           model: Servicio,
@@ -109,10 +113,19 @@ exports.getVentas = async (req, res) => {
       order: [["creado_en", "DESC"]],
     });
 
+    // 🔹 Formatear fechas a hora chilena
+    const ventasFormateadas = ventas.map((v) => {
+      const ventaData = v.toJSON();
+      ventaData.creado_en_chile = moment(ventaData.creado_en)
+        .tz("America/Santiago")
+        .format("YYYY-MM-DD HH:mm:ss");
+      return ventaData;
+    });
+
     return res.status(200).json({
       ok: true,
       message: "Ventas obtenidas correctamente",
-      data: ventas,
+      data: ventasFormateadas,
     });
   } catch (error) {
     console.error("[VENTA CONTROLLER] Error al obtener ventas:", error);
@@ -147,10 +160,15 @@ exports.getVentaById = async (req, res) => {
       });
     }
 
+    const ventaData = venta.toJSON();
+    ventaData.creado_en_chile = moment(ventaData.creado_en)
+      .tz("America/Santiago")
+      .format("YYYY-MM-DD HH:mm:ss");
+
     return res.status(200).json({
       ok: true,
       message: "Venta obtenida correctamente",
-      data: venta,
+      data: ventaData,
     });
   } catch (error) {
     console.error("[VENTA CONTROLLER] Error al obtener venta:", error);

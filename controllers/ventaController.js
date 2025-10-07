@@ -50,12 +50,54 @@ exports.createVenta = async (req, res) => {
 // ===============================
 exports.getVentas = async (req, res) => {
   try {
+    const { search } = req.query;
+
+    const where = {};
+
+    if (search) {
+      const { Op } = require("sequelize");
+      const term = `%${search}%`;
+
+      where[Op.or] = [
+        { estado: { [Op.like]: term } },
+        { id_transaccion: { [Op.like]: term } },
+        { codigo_comercio: { [Op.like]: term } },
+        { ubicacion: { [Op.like]: term } },
+        { ip_amos: { [Op.like]: term } },
+      ];
+    }
+
     const ventas = await Venta.findAll({
+      where,
       include: [
-        { model: User, as: "usuario", attributes: ["id", "name", "last_name", "email"] },
-        { model: Servicio, as: "servicio", attributes: ["id", "nombre", "precio"] },
+        {
+          model: User,
+          as: "usuario",
+          attributes: ["id", "name", "last_name", "email"],
+          // Permite buscar también dentro de usuario
+          ...(search && {
+            where: {
+              [require("sequelize").Op.or]: [
+                { name: { [require("sequelize").Op.like]: `%${search}%` } },
+                { email: { [require("sequelize").Op.like]: `%${search}%` } },
+              ],
+            },
+          }),
+          required: false, // para no excluir ventas sin usuario
+        },
+        {
+          model: Servicio,
+          as: "servicio",
+          attributes: ["id", "nombre", "precio"],
+          ...(search && {
+            where: {
+              nombre: { [require("sequelize").Op.like]: `%${search}%` },
+            },
+          }),
+          required: false,
+        },
       ],
-      order: [["creado_en", "DESC"]], // columna en DB
+      order: [["creado_en", "DESC"]],
     });
 
     return res.status(200).json({

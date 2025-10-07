@@ -95,7 +95,7 @@ CREATE TABLE IF NOT EXISTS bano_autoservicio.ventas (
   ubicacion VARCHAR(100) NOT NULL,     -- Ubicación física (ej: "Terminal Sur")
 
   -- Auditoría
-  creado_en TIMESTAMP NOT NULL DEFAULT NOW()
+  creado_en TIMESTAMP NOT NULL          -- 🔹 ahora lo envía el backend
 );
 
 -- ============================================

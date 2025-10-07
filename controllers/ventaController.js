@@ -1,7 +1,7 @@
 const Venta = require("../models/Venta");
 const User = require("../models/User");
 const Servicio = require("../models/Servicio");
-const moment = require("moment-timezone");
+const moment = require("moment");
 
 // ===============================
 // Crear una nueva venta
@@ -18,15 +18,18 @@ exports.createVenta = async (req, res) => {
       id_transaccion,
       codigo_autorizacion,
       codigo_comercio,
-      estado
+      estado,
     } = req.body;
 
     if (!usuario_id || !servicio_id || !monto || !metodo_pago || !ip_amos || !ubicacion) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         ok: false,
-        error: "Faltan datos obligatorios" 
+        error: "Faltan datos obligatorios",
       });
     }
+
+    // 🔹 Registrar hora chilena exacta (formato 24h)
+    const horaChilena = moment().format("YYYY-MM-DD HH:mm:ss");
 
     const venta = await Venta.create({
       usuario_id,
@@ -38,25 +41,24 @@ exports.createVenta = async (req, res) => {
       id_transaccion,
       codigo_autorizacion,
       codigo_comercio,
-      estado
+      estado,
+      creado_en: horaChilena,
     });
 
-    // 🔹 Convertir fecha a hora chilena antes de responder
+    // Formatear la salida (sin conversión, solo estilo)
     const ventaData = venta.toJSON();
-    ventaData.creado_en_chile = moment(ventaData.creado_en)
-      .tz("America/Santiago")
-      .format("YYYY-MM-DD HH:mm:ss");
+    ventaData.creado_en = moment(ventaData.creado_en).format("YYYY-MM-DD HH:mm:ss");
 
     return res.status(201).json({
       ok: true,
       message: "Venta creada correctamente",
-      data: ventaData
+      data: ventaData,
     });
   } catch (err) {
     console.error("Error creando venta:", err);
-    return res.status(500).json({ 
+    return res.status(500).json({
       ok: false,
-      error: "Error interno del servidor"
+      error: "Error interno del servidor",
     });
   }
 };
@@ -113,13 +115,11 @@ exports.getVentas = async (req, res) => {
       order: [["creado_en", "DESC"]],
     });
 
-    // 🔹 Formatear fechas a hora chilena
+    // 🔹 Mostrar las fechas tal como están en la DB, formateadas a 24h
     const ventasFormateadas = ventas.map((v) => {
-      const ventaData = v.toJSON();
-      ventaData.creado_en_chile = moment(ventaData.creado_en)
-        .tz("America/Santiago")
-        .format("YYYY-MM-DD HH:mm:ss");
-      return ventaData;
+      const data = v.toJSON();
+      data.creado_en = moment(data.creado_en).format("YYYY-MM-DD HH:mm:ss");
+      return data;
     });
 
     return res.status(200).json({
@@ -161,9 +161,7 @@ exports.getVentaById = async (req, res) => {
     }
 
     const ventaData = venta.toJSON();
-    ventaData.creado_en_chile = moment(ventaData.creado_en)
-      .tz("America/Santiago")
-      .format("YYYY-MM-DD HH:mm:ss");
+    ventaData.creado_en = moment(ventaData.creado_en).format("YYYY-MM-DD HH:mm:ss");
 
     return res.status(200).json({
       ok: true,

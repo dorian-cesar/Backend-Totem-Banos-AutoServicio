@@ -5,8 +5,8 @@ const auditLogger = require("./middlewares/auditLogger");
 // 🔹 Importar modelos para que Sequelize los registre
 require("./models/User");
 require("./models/Servicio");
-require("./models/ApiLog");
-require("./cron/limpiezaLogs");
+// require("./models/ApiLog");
+// require("./cron/limpiezaLogs");
 
 const app = express();
 app.use(express.json());
@@ -20,7 +20,7 @@ const corsOptions =
 app.use(cors(corsOptions));
 
 // 🔹 Middleware de logger
-app.use(auditLogger);
+// app.use(auditLogger);
 
 // 🔹 Rutas
 const authRoutes = require("./routes/authRoutes");

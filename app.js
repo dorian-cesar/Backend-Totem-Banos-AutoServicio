@@ -5,6 +5,7 @@ const auditLogger = require("./middlewares/auditLogger");
 // 🔹 Importar modelos para que Sequelize los registre
 require("./models/User");
 require("./models/Servicio");
+require("./models/Dispositivo");
 // require("./models/ApiLog");
 // require("./cron/limpiezaLogs");
 
@@ -29,12 +30,14 @@ const userRoutes = require("./routes/userRoutes");
 const roleRoutes = require("./routes/roleRoutes");
 const ventaRoutes = require("./routes/ventaRoutes");
 const serverRoutes = require("./routes/serverRoutes");
+const dispositivoRoutes = require("./routes/dispositivoRoutes");
 
 app.use("/api/auth", authRoutes);
 app.use("/api/servicios", servicioRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/roles", roleRoutes);
 app.use("/api/ventas", ventaRoutes);
+app.use("/api/dispositivos", dispositivoRoutes);
 app.use("/server", serverRoutes);
 
 // 🔹 Health check

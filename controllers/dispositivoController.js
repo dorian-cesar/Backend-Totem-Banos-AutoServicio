@@ -28,3 +28,21 @@ exports.getDispositivoByIdentificador = async (req, res) => {
     });
   }
 };
+
+exports.getAllDispositivos = async (req, res) => {
+  try {
+    const dispositivos = await Dispositivo.findAll();
+
+    res.json({
+      ok: true,
+      data: dispositivos
+    });
+  } catch (error) {
+    console.error("Error al obtener dispositivos:", error);
+    res.status(500).json({
+      ok: false,
+      error: "Error interno del servidor",
+      detail: error.message
+    });
+  }
+};

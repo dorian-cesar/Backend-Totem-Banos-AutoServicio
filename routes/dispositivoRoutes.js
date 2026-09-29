@@ -8,5 +8,10 @@ router.get("/:identificador", dispositivoController.getDispositivoByIdentificado
 // GET /api/dispositivos
 router.get("/", dispositivoController.getAllDispositivos);
 
+// PATCH /api/dispositivos/:identificador/status
+router.patch("/:identificador/status", dispositivoController.updateDispositivoStatus);
+
+// PUT /api/dispositivos/:identificador/status
+router.put("/:identificador/status", dispositivoController.updateDispositivoStatus);
 
 module.exports = router;

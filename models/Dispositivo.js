@@ -24,6 +24,11 @@ const Dispositivo = sequelize.define("Dispositivo", {
     allowNull: true,
     defaultValue: "online",
   },
+  convenios: {
+    type: DataTypes.BOOLEAN,
+    allowNull: true,
+    defaultValue: false,
+  },
   ultima_conexion: {
     type: DataTypes.DATE,
     allowNull: true,
